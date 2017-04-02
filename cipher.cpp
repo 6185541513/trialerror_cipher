@@ -17,7 +17,7 @@ int main()
   //check file access
   if(infile.is_open())
     {
-      //       init();
+      init();
       //file content -> string
       getline(infile, hexStr);
      
@@ -36,7 +36,7 @@ int main()
 	    con << tmp;
 	    numStr += con.str();
 	}
-      init();
+      //init();
       //print strings
       std::cout << hexStr << '\n';
       std::cout << numStr << '\n';
@@ -56,6 +56,7 @@ void init()
   const char letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   // char convertedLetters[26];
   char **letterMatrix = (char **) new char*[10];
+  letterMatrix[0] = new char[10];
   int a = 0;
   int b = 0;
   
@@ -80,27 +81,5 @@ void init()
 
 int charTo1dig(char c)
 {
-  const char letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  // char []convertedLetters;
-  char **letterMatrix = (char **) new char*[10];
-  int a = 0;
-  int b = 0;
-  
-  for(int i = 0; i < (sizeof letters)-1; i++)
-    {
-      letterMatrix[a][b] = letters[i];
-
-      std::cout << letterMatrix[a][b];
-      std::cout << ", a: " << a << ", b: " << b << std::endl;
-      
-      if(b == 9)
-	{
-	  letterMatrix[++a] = new char[10];
-	  b = 0;
-	}
-      else
-	{
-	  ++b;
-	}
-    }  
+ 
 }
