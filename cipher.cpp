@@ -8,8 +8,11 @@ using namespace std;
 void createLetterMatrix();
 void createRandomNumberString();
 void encrypt(string msg);
+int charToDigit(char c);
+int charToSingleDigit(char c);
 void log(string msg);
 
+const char letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 char **letterMatrix = new char*[10];
 string randNumStr;
 string encryptStr;
@@ -31,7 +34,6 @@ int main()
 void createLetterMatrix()
 {
   //letters -> letter matrix
-  const char letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   letterMatrix[0] = new char[10];
   int a = 0;
   int b = 0;
@@ -72,15 +74,14 @@ void createRandomNumberString()
       //number -> 2nd string
       for(it = hexStr.begin(); it < hexStr.end(); it++)
 	{
-	    int tmp;
-	    stringstream ss;
-	    char val = *it;
-	   
-	    ss << val;
-	    ss >> hex >> tmp;
-	    ostringstream con;
-	    con << tmp;
-	    randNumStr += con.str();
+	  stringstream ss;
+	  ostringstream oss;
+	  int tmp;
+	  char c = *it;
+	  ss << c;
+	  ss >> hex >> tmp;
+	  oss << tmp;
+	  randNumStr += oss.str();
 	}
       
       infile.close();
@@ -95,7 +96,57 @@ void createRandomNumberString()
 
 void encrypt(string msg)
 {
+  //message -> digits
+  string::iterator it;
+  //string numMsg;
+  int numMsgArr[msg.length()];
   
+  for(int i = 0; i < msg.length(); i++)
+    {
+      ostringstream oss;
+      char c = msg[i];
+      int n = charToDigit(c);//charToSingleDigit(c);
+      //oss << i;
+      //numMsg += oss.str();
+      numMsgArr[i] = n; 
+    }
+  //log(msg + "=" + numMsg);
+
+  //digits -> encrypted
+  
+}
+
+//char -> digit
+int charToDigit(char c)
+{
+  for(int i = 0; i < (sizeof letters)-1; i++)
+    {
+      if(c == letters[i])
+	{
+	  return i+1;
+	}
+    }
+
+  log("no match found letter");
+  return -1;
+}
+
+//char -> single digit
+int charToSingleDigit(char c)
+{
+  for(int i = 0; i < 3; i++)
+    {
+      for(int j = 0; j < 10; j++)
+	{
+	  if(letterMatrix[i][j] == c)
+	    {
+	      return j;
+	    }
+	}
+    }
+  
+  log("no match found letter matrix");
+  return -1;
 }
 
 void log(string msg)
