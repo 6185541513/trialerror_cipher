@@ -3,23 +3,32 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+using namespace std;
 
-void init();
-std::string createRandomNumberString();
-int charTo1dig(char c);
+void createLetterMatrix();
+void createRandomNumberString();
+void encrypt(string msg);
+void log(string msg);
 
 char **letterMatrix = new char*[10];
-std::string randNumStr;
+string randNumStr;
+string encryptStr;
 
 int main()
 {
-  init();
-  randNumStr = createRandomNumberString();
-    
+  createLetterMatrix();
+  createRandomNumberString();
+
+  cout << "enter cipher message: "<< endl;
+  string msg;
+  cin >> msg;
+
+  encrypt(msg);
+  
   return 0;
 }
 
-void init()
+void createLetterMatrix()
 {
   //letters -> letter matrix
   const char letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -30,9 +39,6 @@ void init()
   for(int i = 0; i < (sizeof letters)-1; i++)
     {
       letterMatrix[a][b] = letters[i];
-
-      std::cout << letterMatrix[a][b];//debug
-      std::cout << ", a: " << a << ", b: " << b << std::endl;//debug
       
       if(b == 9)
 	{
@@ -44,14 +50,16 @@ void init()
 	  ++b;
 	}
     }
+
+  log("letter matrix created");
 }
 
-std::string createRandomNumberString()
+void createRandomNumberString()
 {
-  std::string hexStr;
-  std::string numStr;
-  std::string::iterator it;
-  std::ifstream infile("random.hex");
+  string hexStr;
+  string numStr;
+  string::iterator it;
+  ifstream infile("random.hex");
   
   //check file access
   if(infile.is_open())
@@ -65,33 +73,32 @@ std::string createRandomNumberString()
       for(it = hexStr.begin(); it < hexStr.end(); it++)
 	{
 	    int tmp;
-	    std::stringstream ss;
+	    stringstream ss;
 	    char val = *it;
 	   
 	    ss << val;
-	    ss >> std::hex >> tmp;
-	    std::ostringstream con;
+	    ss >> hex >> tmp;
+	    ostringstream con;
 	    con << tmp;
-	    numStr += con.str();
+	    randNumStr += con.str();
 	}
       
       infile.close();
       
-      //debug
-      std::cout << hexStr << '\n';
-      std::cout << numStr << '\n';
-
-      return numStr;
+      log("random number string created");
     }
   else
     {
-      std::cout << "cant open file";
-
-      return "";
+      log("cant open file");
     }
 }
 
-int charTo1dig(char c)
+void encrypt(string msg)
 {
- 
+  
+}
+
+void log(string msg)
+{
+  cout << "DEBUG: " << msg << '\n';
 }
