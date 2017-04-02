@@ -5,9 +5,48 @@
 #include <fstream>
 
 void init();
+std::string createRandomNumberString();
 int charTo1dig(char c);
 
+char **letterMatrix = new char*[10];
+std::string randNumStr;
+
 int main()
+{
+  init();
+  randNumStr = createRandomNumberString();
+    
+  return 0;
+}
+
+void init()
+{
+  //letters -> letter matrix
+  const char letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  letterMatrix[0] = new char[10];
+  int a = 0;
+  int b = 0;
+  
+  for(int i = 0; i < (sizeof letters)-1; i++)
+    {
+      letterMatrix[a][b] = letters[i];
+
+      std::cout << letterMatrix[a][b];//debug
+      std::cout << ", a: " << a << ", b: " << b << std::endl;//debug
+      
+      if(b == 9)
+	{
+	  letterMatrix[++a] = new char[10];
+	  b = 0;
+	}
+      else
+	{
+	  ++b;
+	}
+    }
+}
+
+std::string createRandomNumberString()
 {
   std::string hexStr;
   std::string numStr;
@@ -17,7 +56,6 @@ int main()
   //check file access
   if(infile.is_open())
     {
-      init();
       //file content -> string
       getline(infile, hexStr);
      
@@ -36,46 +74,20 @@ int main()
 	    con << tmp;
 	    numStr += con.str();
 	}
-      //init();
-      //print strings
-      std::cout << hexStr << '\n';
-      std::cout << numStr << '\n';
       
       infile.close();
+      
+      //debug
+      std::cout << hexStr << '\n';
+      std::cout << numStr << '\n';
+
+      return numStr;
     }
   else
     {
       std::cout << "cant open file";
-    }
-    
-  return 0;
-}
 
-void init()
-{
-  const char letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  // char convertedLetters[26];
-  char **letterMatrix = (char **) new char*[10];
-  letterMatrix[0] = new char[10];
-  int a = 0;
-  int b = 0;
-  
-  for(int i = 0; i < (sizeof letters)-1; i++)
-    {
-      letterMatrix[a][b] = letters[i];
-
-      std::cout << letterMatrix[a][b];
-      std::cout << ", a: " << a << ", b: " << b << std::endl;
-      
-      if(b == 9)
-	{
-	  letterMatrix[++a] = new char[10];
-	  b = 0;
-	}
-      else
-	{
-	  ++b;
-	}
+      return "";
     }
 }
 
