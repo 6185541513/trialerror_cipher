@@ -6,9 +6,10 @@
 #include <vector>
 using namespace std;
 
+void init();
 void createLetterMatrix();
 void createRandomNumberString();
-void encrypt(string msg);
+string createEncryptedString(string msg);
 char digitToChar(int n);
 int charToDigit(char c);
 int charToSingleDigit(char c);
@@ -22,16 +23,21 @@ string encryptStr;
 
 int main()
 {
-  createLetterMatrix();
-  createRandomNumberString();
+  init();
 
   cout << "enter cipher message: "<< endl;
   string msg;
   cin >> msg;
 
-  encrypt(msg);
+  encryptStr = createEncryptedString(msg);
   
   return 0;
+}
+
+void init()
+{
+  createLetterMatrix();
+  createRandomNumberString();  
 }
 
 void createLetterMatrix()
@@ -107,7 +113,7 @@ void createRandomNumberString()
     }
 }
 
-void encrypt(string msg)
+string createEncryptedString(string msg)
 {
   //message -> literal digits
   string::iterator it;
@@ -126,18 +132,26 @@ void encrypt(string msg)
       numMsgArr[i] = n;
       numMsgVec[i] = n;
     }
-
+  
   //literal digits -> encrypted digits
   vector<int> encryptNumMsgVec(size);
   for(int i = 0; i < size; i++)
     {
       encryptNumMsgVec[i] = numMsgVec[i] + randNumVec[i];
     }
-
+  
   //encrypted digits -> encrypted message
-  char c = digitToChar(30);
-  cout << "c: " <<c;
+  string tmp;
+  for(int i = 0; i < size; i++)
+    {
+      tmp += digitToChar(encryptNumMsgVec[i]);
+    }
+
+  log("encrypted string created: " + tmp);
+  return tmp;
 }
+
+
 
 //digit -> char
 char digitToChar(int n)
