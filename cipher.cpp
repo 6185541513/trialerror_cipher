@@ -4,12 +4,14 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <stdlib.h>
 using namespace std;
 
 void init();
 void createLetterMatrix();
 void createRandomNumberString();
 string createEncryptedString(string msg);
+string createDecryptedString(string msg);
 char digitToChar(int n);
 int charToDigit(char c);
 int charToSingleDigit(char c);
@@ -20,6 +22,7 @@ char **letterMatrix = new char*[10];
 string randNumStr;
 vector<int> randNumVec;
 string encryptStr;
+string decryptStr;
 
 int main()
 {
@@ -30,6 +33,7 @@ int main()
   cin >> msg;
 
   encryptStr = createEncryptedString(msg);
+  decryptStr = createDecryptedString(encryptStr);
   
   return 0;
 }
@@ -113,6 +117,7 @@ void createRandomNumberString()
     }
 }
 
+//encrypt
 string createEncryptedString(string msg)
 {
   //message -> literal digits
@@ -121,7 +126,7 @@ string createEncryptedString(string msg)
   int size = msg.length();
   int numMsgArr[size];
   vector<int> numMsgVec(size);
-  
+  log("ec numeric msg: ");
   for(int i = 0; i < msg.length(); i++)
     {
       ostringstream oss;
@@ -131,13 +136,19 @@ string createEncryptedString(string msg)
       //numMsg += oss.str();
       numMsgArr[i] = n;
       numMsgVec[i] = n;
+      cout << n << " ";
     }
   
   //literal digits -> encrypted digits
   vector<int> encryptNumMsgVec(size);
+  cout << endl;
+  log("encrypted digits: ");
   for(int i = 0; i < size; i++)
     {
-      encryptNumMsgVec[i] = numMsgVec[i] + randNumVec[i];
+       const char c = randNumStr.at(i);
+      encryptNumMsgVec[i] = numMsgVec[i] + atoi(&c);
+      //encryptNumMsgVec[i] = numMsgVec[i] + randNumStr.at(i);
+      cout << "d: " << encryptNumMsgVec[i] << ", n: " << numMsgVec[i] << ", r: " << randNumStr.at(i) << endl;
     }
   
   //encrypted digits -> encrypted message
@@ -146,12 +157,47 @@ string createEncryptedString(string msg)
     {
       tmp += digitToChar(encryptNumMsgVec[i]);
     }
-
   log("encrypted string created: " + tmp);
   return tmp;
 }
 
+//decrypt
+string createDecryptedString(string msg)
+{
+  //message -> literal digits
+  int size = msg.length();
+  vector<int> numMsgVec(size);
 
+  log("dc numeric msg: ");
+  for(int i = 0; i < size; i++)
+    {
+      char c = msg[i];
+      int n = charToDigit(c);
+      numMsgVec[i] = n;
+      cout << n << " ";
+    }
+  
+  //literal digits -> decrypted digits
+  vector<int> decryptNumMsgVec(size);
+  cout << endl;
+  log("decrypt digits: ");
+  for(int i = 0; i < size; i++)
+    {
+      const char c = randNumStr.at(i);
+      decryptNumMsgVec[i] = numMsgVec[i] - atoi(&c);
+      cout << "d: " << decryptNumMsgVec[i] << ", n: " << numMsgVec[i] << ", r: " << randNumStr.at(i) << endl;
+    }
+
+  //decrypted digits -> decrypted message
+  string tmp;
+  for(int i = 0; i < size; i++)
+    {
+      tmp += digitToChar(decryptNumMsgVec[i]);
+    }
+  cout << endl;
+  log("decrypt string created: " + tmp);
+  return tmp;
+}
 
 //digit -> char
 char digitToChar(int n)
@@ -172,7 +218,7 @@ int charToDigit(char c)
     {
       if(c == letters[i])
 	{
-	  return i+1;
+	  return i;
 	}
     }
 
