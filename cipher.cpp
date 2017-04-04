@@ -162,7 +162,7 @@ string createDecryptedString(string msg)
       int n = charToDigit(c);
       numMsgVec[i] = n;
 
-      log(n);
+      cout << "c: " << c << "n: " << n << endl;
     }
   
   //literal digits -> decrypted digits
@@ -171,9 +171,14 @@ string createDecryptedString(string msg)
   for(int i = 0; i < size; i++)
     {
       const char c = randNumStr.at(i);
-      decryptNumMsgVec[i] = numMsgVec[i] - atoi(&c);
+      int n = numMsgVec[i] - atoi(&c); 
+      if(n < 0)
+	{
+	  n += length;
+	}
+      decryptNumMsgVec[i] = n;
       
-      cout << "d: " << decryptNumMsgVec[i] << ", n: " << numMsgVec[i] << ", r: " << randNumStr.at(i) << endl;
+      cout << "d: " << decryptNumMsgVec[i] << ", n: " << n << ", r: " << randNumStr.at(i) << endl;
     }
 
   //decrypted digits -> decrypted message
