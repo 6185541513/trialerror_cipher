@@ -15,12 +15,14 @@ string createDecryptedString(string msg);
 char digitToChar(int n);
 int charToDigit(char c);
 int charToSingleDigit(char c);
+void debug(string msg);
 void log(string msg);
+void log(int msg);
 
-const char letters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+string letters("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+int length = letters.length();
 char **letterMatrix = new char*[10];
 string randNumStr;
-vector<int> randNumVec;
 string encryptStr;
 string decryptStr;
 
@@ -51,9 +53,9 @@ void createLetterMatrix()
   int a = 0;
   int b = 0;
   
-  for(int i = 0; i < (sizeof letters)-1; i++)
+  for(int i = 0; i < length; i++)
     {
-      letterMatrix[a][b] = letters[i];
+      letterMatrix[a][b] = letters.at(i);
       
       if(b == 9)
 	{
@@ -66,14 +68,13 @@ void createLetterMatrix()
 	}
     }
 
-  log("letter matrix created");
+  debug("letter matrix created");
 }
 
 void createRandomNumberString()
 {
   string hexStr;
   string numStr;
-  string::iterator it;
   ifstream infile("random.hex");
   
   //check file access
@@ -85,6 +86,7 @@ void createRandomNumberString()
       //iterate string
       //hex char -> number
       //number -> 2nd string
+      string::iterator it;
       for(it = hexStr.begin(); it < hexStr.end(); it++)
 	{
 	  stringstream ss;
@@ -96,59 +98,43 @@ void createRandomNumberString()
 	  oss << tmp;
 	  randNumStr += oss.str();
 	}
-      for(int i = 0; i < hexStr.length(); i++)
-	{
-	  stringstream ss;
-	  ostringstream oss;
-	  int tmp;
-	  char c = hexStr[i];
-	  ss << c;
-	  ss >> hex >> tmp;
-	  randNumVec.push_back(tmp);
-	}
       
       infile.close();
       
-      log("random number string created");
+      debug("random number string created");
     }
   else
     {
-      log("cant open file");
+      debug("cant open file");
     }
 }
 
 //encrypt
 string createEncryptedString(string msg)
 {
-  //message -> literal digits
-  string::iterator it;
-  //string numMsg;
   int size = msg.length();
-  int numMsgArr[size];
   vector<int> numMsgVec(size);
-  log("ec numeric msg: ");
-  for(int i = 0; i < msg.length(); i++)
+
+  //message -> literal digits
+  debug("encrypted numeric msg: ");
+  for(int i = 0; i < size; i++)
     {
-      ostringstream oss;
       char c = msg[i];
-      int n = charToDigit(c);//charToSingleDigit(c);
-      //oss << i;
-      //numMsg += oss.str();
-      numMsgArr[i] = n;
+      int n = charToDigit(c);
       numMsgVec[i] = n;
-      cout << n << " ";
+      
+      log(n);
     }
   
   //literal digits -> encrypted digits
   vector<int> encryptNumMsgVec(size);
-  cout << endl;
-  log("encrypted digits: ");
+  debug("encrypted digits: ");
   for(int i = 0; i < size; i++)
     {
-       const char c = randNumStr.at(i);
+      const char c = randNumStr.at(i);
       encryptNumMsgVec[i] = numMsgVec[i] + atoi(&c);
-      //encryptNumMsgVec[i] = numMsgVec[i] + randNumStr.at(i);
-      cout << "d: " << encryptNumMsgVec[i] << ", n: " << numMsgVec[i] << ", r: " << randNumStr.at(i) << endl;
+
+      cout << "e: " << encryptNumMsgVec[i] << ", n: " << numMsgVec[i] << ", r: " << randNumStr.at(i) << endl;
     }
   
   //encrypted digits -> encrypted message
@@ -157,34 +143,36 @@ string createEncryptedString(string msg)
     {
       tmp += digitToChar(encryptNumMsgVec[i]);
     }
-  log("encrypted string created: " + tmp);
+  
+  debug("encrypted string: " + tmp);
   return tmp;
 }
 
 //decrypt
 string createDecryptedString(string msg)
 {
-  //message -> literal digits
   int size = msg.length();
   vector<int> numMsgVec(size);
 
-  log("dc numeric msg: ");
+  //message -> literal digits
+  debug("decrypted numeric msg: ");
   for(int i = 0; i < size; i++)
     {
       char c = msg[i];
       int n = charToDigit(c);
       numMsgVec[i] = n;
-      cout << n << " ";
+
+      log(n);
     }
   
   //literal digits -> decrypted digits
   vector<int> decryptNumMsgVec(size);
-  cout << endl;
-  log("decrypt digits: ");
+  debug("decrypted digits: ");
   for(int i = 0; i < size; i++)
     {
       const char c = randNumStr.at(i);
       decryptNumMsgVec[i] = numMsgVec[i] - atoi(&c);
+      
       cout << "d: " << decryptNumMsgVec[i] << ", n: " << numMsgVec[i] << ", r: " << randNumStr.at(i) << endl;
     }
 
@@ -194,8 +182,8 @@ string createDecryptedString(string msg)
     {
       tmp += digitToChar(decryptNumMsgVec[i]);
     }
-  cout << endl;
-  log("decrypt string created: " + tmp);
+  
+  debug("decrypt string: " + tmp);
   return tmp;
 }
 
@@ -203,26 +191,26 @@ string createDecryptedString(string msg)
 char digitToChar(int n)
 {
   //assure digit in letter range
-  while(n >= (sizeof letters))
+  while(n >= length)
     {
-      n -= (sizeof letters)-1;
+      n -= length;
     }
-
-  return letters[n];
+  cout << "n: " << n << ", c: " << letters.at(n) << endl;
+  return letters.at(n);
 }
 
 //char -> digit
 int charToDigit(char c)
 {
-  for(int i = 0; i < (sizeof letters)-1; i++)
+  for(int i = 0; i < length; i++)
     {
-      if(c == letters[i])
+      if(c == letters.at(i))
 	{
 	  return i;
 	}
     }
 
-  log("no match found letter");
+  debug("no match found letter");
   return -1;
 }
 
@@ -240,11 +228,21 @@ int charToSingleDigit(char c)
 	}
     }
   
-  log("no match found letter matrix");
+  debug("no match found letter matrix");
   return -1;
+}
+
+void debug(string msg)
+{
+  cout << "DEBUG: " << msg << endl;
 }
 
 void log(string msg)
 {
-  cout << "DEBUG: " << msg << '\n';
+  cout << msg << endl;
+}
+
+void log(int msg)
+{
+  cout << msg << endl;
 }
