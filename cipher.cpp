@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
+#include <boost/algorithm/string.hpp>
 using namespace std;
 
 void createRandomNumberString();
@@ -25,7 +26,8 @@ int main()
   cout << "enter cipher message: "<< endl;
   string msg;
   cin >> msg;
-
+  boost::to_upper(msg);
+  
   string encryptedMsg = encryptMessage(msg);
   decryptMessage(encryptedMsg);
   
