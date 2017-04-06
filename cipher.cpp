@@ -25,7 +25,7 @@ int main()
 
   cout << "enter cipher message: "<< endl;
   string msg;
-  cin >> msg;
+  getline( cin, msg );
   boost::to_upper(msg);
   
   string encryptedMsg = encryptMessage(msg);
@@ -81,16 +81,27 @@ string encryptMessage(string msg)
   string dbugStr2;
   for(int i = 0; i < msg.length(); i++)
     {
-      int n = charToDigit(msg[i]);
-      char c = randNumStr.at(i);
+      if(isspace(msg[i]))
+	{      
+	  tmp += " ";
+	  
+	  //debug
+	  dbugStr1 += " ";
+	  dbugStr2 += " ";
+	}
+      else
+	{
+	  int n = charToDigit(msg[i]);
+	  char c = randNumStr.at(i);
       
-      int encryptedDigit = n + atoi(&c);
+	  int encryptedDigit = n + atoi(&c);
 
-      tmp += digitToChar(encryptedDigit);
-
-      //debug
-      dbugStr1 += intToString(n);
-      dbugStr2 += intToString(encryptedDigit);
+	  tmp += digitToChar(encryptedDigit);
+	  
+	  //debug
+	  dbugStr1 += intToString(n);
+          dbugStr2 += intToString(encryptedDigit);
+	}
     }
 
   debug("message encrypted. "+msg+" > "+dbugStr1+" > "+dbugStr2+" > " + tmp);
@@ -108,21 +119,32 @@ string decryptMessage(string msg)
   string dbugStr2;
   for(int i = 0; i < msg.length(); i++)
     {
-      const char c = randNumStr.at(i);
-      int n = charToDigit(msg[i]);
-      int decryptedDigit = n - atoi(&c); 
-
-      //assure digit in letter range
-      if(decryptedDigit < 0)
+      if(isspace(msg[i]))
 	{
-	  decryptedDigit += length;
+	  tmp += " ";
+	  
+	  //debug
+	  dbugStr1 += " ";
+	  dbugStr2 += " ";
 	}
+      else
+	{
+	  const char c = randNumStr.at(i);
+	  int n = charToDigit(msg[i]);
+	  int decryptedDigit = n - atoi(&c); 
 
-      tmp += digitToChar(decryptedDigit);
+	  //assure digit in letter range
+	  if(decryptedDigit < 0)
+	    {
+	      decryptedDigit += length;
+	    }
 
-      //debug
-      dbugStr1 += intToString(n);
-      dbugStr2 += intToString(decryptedDigit);
+	  tmp += digitToChar(decryptedDigit);
+
+	  //debug
+	  dbugStr1 += intToString(n);
+	  dbugStr2 += intToString(decryptedDigit);
+	}
     }
   
   debug("message decrypted. "+msg+" > "+dbugStr1+" > "+dbugStr2+" > " + tmp);
